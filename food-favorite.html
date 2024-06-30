@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食べ物のアンケート</title>
+    <style>
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>好きな食べ物を選んでください</h1>
+    <form id="foodForm">
+        <label>
+            <input type="radio" name="food" value="寿司"> 寿司
+        </label><br>
+        <label>
+            <input type="radio" name="food" value="ラーメン"> ラーメン
+        </label><br>
+        <label>
+            <input type="radio" name="food" value="カレー"> カレー
+        </label><br>
+        <label>
+            <input type="radio" name="food" value="焼肉"> 焼肉
+        </label><br>
+        <label>
+            <input type="radio" name="food" value="天ぷら"> 天ぷら
+        </label><br>
+        <label>
+            <input type="radio" name="food" value="餃子"> 餃子
+        </label><br>
+        <input type="submit" value="送信">
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        // 初期化
+        const votes = JSON.parse(localStorage.getItem('votes')) || {
+            '寿司': 0,
+            'ラーメン': 0,
+            'カレー': 0,
+            '焼肉': 0,
+            '天ぷら': 0,
+            '餃子': 0
+        };
+
+        function updateResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            for (const [food, count] of Object.entries(votes)) {
+                const p = document.createElement('p');
+                p.textContent = `${food}: ${count}票`;
+                resultDiv.appendChild(p);
+            }
+        }
+
+        document.getElementById('foodForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const selectedFood = formData.get('food');
+            if (selectedFood) {
+                votes[selectedFood]++;
+                localStorage.setItem('votes', JSON.stringify(votes));
+                updateResults();
+            } else {
+                alert('食べ物を選んでください。');
+            }
+        });
+
+        // 初期結果の表示
+        updateResults();
+    </script>
+</body>
+</html>
